@@ -1,5 +1,6 @@
 (function seedDatabase(data){
     data.init=function(app){
+        console.log('seeding the database...!!!');
         const Recipe=require('../models/recipe');
         const Ingredient=require('../models/ingredient');
     

@@ -2,7 +2,7 @@
     const mongoose=require('mongoose');
     const Recipe=require('../models/recipe');
     data.init=function(app){
-        mongoose.connect('http://localhost:27017/RecipesDB');
+        mongoose.connect('mongodb://localhost:27017/RecipesDB');
         console.log('Inside index data');
         Recipe.findOne({},(err,doc)=>{
             if(err){

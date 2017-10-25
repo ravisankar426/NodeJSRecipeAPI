@@ -7,6 +7,7 @@ const controllers=require('./controllers');
 const bodyParser=require('body-parser');
 const data=require('./data/seedDatabase');
 
+
 var app=express();
 
 app.use(bodyParser.json());
@@ -15,7 +16,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 const port=3000;
 const hostname='127.0.0.1';
 
-mongoose.connect('localhost:27017/RecipesDB');
+mongoose.connect('mongodb://localhost:27017/RecipesDB',{useMongoClient:true});
 controllers.init(app);
 
 app.get('/',(req,res)=>{
@@ -29,7 +30,7 @@ app.get('/',(req,res)=>{
             res.setHeader('Content-type','text/html');
             res.write('<h1>'+name+'</h1>');
         }else{
-            data.init(app);
+            //data.init(app);
         }
         res.statusCode=200;
         res.end();
