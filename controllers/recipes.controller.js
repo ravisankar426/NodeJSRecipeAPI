@@ -4,6 +4,7 @@ const Ingredient=require('../models/ingredient');
 (function(recipesController){
     recipesController.init=function(app){
 
+        // This method is to get all the recipes
         app.get('/api/recipes',(req,res)=>{
             Recipe.find({},(err,recipes)=>{
                 if(err){
@@ -16,6 +17,7 @@ const Ingredient=require('../models/ingredient');
             });
         });
 
+        //This method is to get recipe by id
         app.get('/api/recipe/:id',(req,res)=>{
             const recipeId=req.params['id'];
             Recipe.find({id:recipeId},(err,recipe)=>{
@@ -29,6 +31,7 @@ const Ingredient=require('../models/ingredient');
             });
         });
 
+        //This method is to delete a recipe by it's id
         app.delete('/api/recipe/delete/:id',(req,res)=>{
             const recipeId=req.params['id'];
             Recipe.remove({id:recipeId},(err,recipes)=>{
@@ -42,6 +45,7 @@ const Ingredient=require('../models/ingredient');
             });
         });
 
+        //This method is to add a recipe.
         app.post('/api/recipe/add',(req,res)=>{
             var recipe=new Recipe();
             var ingredient=new Ingredient();
