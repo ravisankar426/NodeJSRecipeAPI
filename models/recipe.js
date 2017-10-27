@@ -8,7 +8,7 @@ var recipeSchema=new Schema({
     name:{type:String,required:true},
     description:{type:String},
     imagePath:{type:String},
-    ingredients:[{type:Schema.Types.ObjectId}]
+    ingredients:{type:Schema.Types.ObjectId,ref:'Ingredient'}
 });
 
 mongoose.plugin(mongooseUniqueValidator);
