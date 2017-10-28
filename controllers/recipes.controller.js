@@ -5,8 +5,9 @@ const Ingredient=require('../models/ingredient');
     recipesController.init=function(app,mongoose){
 
         // This method is to get all the recipes
+        //,{id:1,name:1,imagePath:1,description:1,ingredients:0,_id:0}
         app.get('/api/recipes',(req,res)=>{
-            Recipe.find({},(err,recipes)=>{
+            Recipe.find({},{__v:0,_id:0},(err,recipes)=>{
                 if(err){
                     res.write(err);
                 }else{                    
@@ -19,7 +20,7 @@ const Ingredient=require('../models/ingredient');
 
          // This method is to get all the ingredients
         app.get('/api/ingredients',(req,res)=>{
-            Ingredient.find({},(err,ingredients)=>{
+            Ingredient.find({},{_id:0,__v:0,Recipe:0},(err,ingredients)=>{
                 if(err){
                     res.write(err);
                 }else{
@@ -31,32 +32,30 @@ const Ingredient=require('../models/ingredient');
         });
 
         //This method is to get recipe by id
+        //,{Name:1,Amount:1,_id:0,Recipe:0}
         app.get('/api/recipe/:id',(req,res)=>{
             const recipeId=req.params['id'];
-            Recipe.findOne({id:recipeId},(err,recipe)=>{
+            Recipe.findOne({id:recipeId},{__v:0},(err,recipe)=>{
                 if(err){
                     res.write(err);
                 }else{
-                    var recipeResult=recipe;
-                    if(recipeResult.ingredients!=undefined){
-                        recipeResult.ingredients=[];
-                        Ingredient.find({_id:recipe.ingredients},(ingErr,ingredients)=>{
+                    if(recipe.ingredients!=undefined){
+                        Ingredient.find({Recipe:recipe._id},{__v:0,Recipe:0,_id:0},(ingErr,ingredients)=>{
                             if(ingErr){
                                 throw ingErr;
                             }
                             else{
-                                console.log(ingredients);
-                                recipeResult.ingredients=ingredients;
+                                recipe.ingredients=ingredients;
                                 res.statusCode=200;
                                 res.setHeader('Content-Type','application/json');
-                                res.send(recipeResult);
+                                res.send(recipe);
                             }
                         });
                     }
                     else{
                         res.statusCode=200;
                         res.setHeader('Content-Type','application/json');
-                        res.send(recipeResult);
+                        res.send(recipe);
                     }
                 }
             });
