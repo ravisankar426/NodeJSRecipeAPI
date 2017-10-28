@@ -17,7 +17,7 @@ const port=3000;
 const hostname='127.0.0.1';
 
 mongoose.connect('mongodb://localhost:27017/RecipesDB',{useMongoClient:true});
-controllers.init(app);
+controllers.init(app,mongoose);
 
 app.get('/',(req,res)=>{
     var name='';
