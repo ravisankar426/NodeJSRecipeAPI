@@ -5,7 +5,6 @@ const Ingredient=require('../models/ingredient');
     recipesController.init=function(app,mongoose){
 
         // This method is to get all the recipes
-        //,{id:1,name:1,imagePath:1,description:1,ingredients:0,_id:0}
         app.get('/api/recipes',(req,res)=>{
             Recipe.find({},{__v:0,_id:0},(err,recipes)=>{
                 if(err){
@@ -32,7 +31,6 @@ const Ingredient=require('../models/ingredient');
         });
 
         //This method is to get recipe by id
-        //,{Name:1,Amount:1,_id:0,Recipe:0}
         app.get('/api/recipe/:id',(req,res)=>{
             const recipeId=req.params['id'];
             Recipe.findOne({id:recipeId},{__v:0},(err,recipe)=>{
@@ -40,7 +38,7 @@ const Ingredient=require('../models/ingredient');
                     res.write(err);
                 }else{
                     if(recipe.ingredients!=undefined){
-                        Ingredient.find({Recipe:recipe._id},{__v:0,Recipe:0,_id:0},(ingErr,ingredients)=>{
+                        Ingredient.find({Recipe:recipe._id},{__v:0},(ingErr,ingredients)=>{
                             if(ingErr){
                                 throw ingErr;
                             }
@@ -59,6 +57,41 @@ const Ingredient=require('../models/ingredient');
                     }
                 }
             });
+        });
+
+        //This method is to update a recipe by it's id
+        app.put('/api/recipe/update/:id',(req,res)=>{
+            const recipeId=req.params['id'];
+            var newIngredients=[];
+            Ingredient.remove({Recipe:req.body._id},(ingRemoveErr)=>{
+                if(!ingRemoveErr){
+                    for(var i=0;i<req.body.ingredients.length;i++){
+                        ingredient=new Ingredient();
+                        ingredient.Name=req.body.ingredients[i].Name;
+                        ingredient.Amount=req.body.ingredients[i].Amount;
+                        ingredient.Recipe=req.body._id;
+                        ingredient.save();
+                        newIngredients.push(ingredient);
+                    }
+                    Recipe.findOneAndUpdate({id:recipeId},{
+                        id:req.body.id,
+                        name:req.body.name,
+                        description:req.body.description,
+                        imagePath:req.body.imagePath,
+                        ingredients:newIngredients
+                        },(err,recipe)=>{
+                            if(err){
+                                res.write(err);
+                            }
+                            if(recipe){
+                                res.statusCode=200;
+                                res.setHeader('Content-Type','application/json');
+                                res.end();
+                            }
+                        });
+                }
+            });
+            
         });
 
         //This method is to delete a recipe by it's id
