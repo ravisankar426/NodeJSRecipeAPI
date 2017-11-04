@@ -6,7 +6,7 @@ const Ingredient=require('../models/ingredient');
 
         // This method is to get all the recipes
         app.get('/api/recipes',(req,res)=>{
-            Recipe.find({},{__v:0,_id:0},(err,recipes)=>{
+            Recipe.find({},{__v:0},(err,recipes)=>{
                 if(err){
                     res.write(err);
                 }else{                    
@@ -37,8 +37,10 @@ const Ingredient=require('../models/ingredient');
                 if(err){
                     res.write(err);
                 }else{
+                    var foundRecipe=new Recipe();
+                    foundRecipe._id=recipe._id;
                     if(recipe.ingredients!=undefined){
-                        Ingredient.find({Recipe:recipe._id},{__v:0},(ingErr,ingredients)=>{
+                        Ingredient.find({Recipe:foundRecipe._id},{__v:0},(ingErr,ingredients)=>{
                             if(ingErr){
                                 throw ingErr;
                             }
@@ -60,6 +62,7 @@ const Ingredient=require('../models/ingredient');
         });
 
         //This method is to update a recipe by it's id
+
         app.put('/api/recipe/update/:id',(req,res)=>{
             const recipeId=req.params['id'];
             var newIngredients=[];
@@ -86,7 +89,7 @@ const Ingredient=require('../models/ingredient');
                             if(recipe){
                                 res.statusCode=200;
                                 res.setHeader('Content-Type','application/json');
-                                res.end();
+                                res.send(recipe);
                             }
                         });
                 }
